@@ -9,6 +9,10 @@
   align-content: center;
 }
 
+.tableContainer{
+  margin: 30px;
+}
+
 .sForm{
   margin-top: 40px;
 }

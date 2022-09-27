@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-anonymous-default-export
 export default function (instance) {
     return {
         getAll() {
@@ -8,6 +9,9 @@ export default function (instance) {
         },
         deleteStudent(id){
             return instance.delete('/students/'+id)
+        },
+        updateStudent(id,student){
+            return instance.put('/students/'+id,student)
         }
     }
 }

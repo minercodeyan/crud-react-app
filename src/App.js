@@ -3,7 +3,10 @@ import {useEffect, useState} from "react";
 import {StudentList} from "./components/StudentList";
 import indexAPI from "./api/indexAPI";
 import {StudentForm} from "./components/StudentForm";
+import {StudentDialog} from "./components/StudentDialog"
 import {Grid} from "@mui/material";
+
+
 
 
 function App() {
@@ -11,6 +14,8 @@ function App() {
     const [students, setValue] = useState([])
     const [errorData, setErrorData] = useState()
     const [formError, setFormError] = useState()
+    const [userForUpdate, setUserForUpdate] = useState({})
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         indexAPI.students.getAll().then(r => {
@@ -18,6 +23,16 @@ function App() {
             }
         ).catch(err => setErrorData(err))
     }, [])
+
+    function openDialog(user){
+        setOpen(true)
+        setUserForUpdate(user)
+    }
+
+    function closeDialog(){
+        setOpen(false)
+    }
+
 
     function addUser(student) {
         indexAPI.students.postStudent(student)
@@ -33,6 +48,23 @@ function App() {
             .then(setValue(students.filter(s => s.id !== Number(studentId))))
     }
 
+    function updateUser(student,studentId) {
+
+        indexAPI.students.updateStudent(studentId,student)
+            .then(setValue(students.map(s => {
+                if (s.id === studentId) {
+                    return {
+                        id:s.id,
+                        firstname: s.firstname,
+                        lastname: s.lastname,
+                        avgStatus: student.avgStatus,
+                        groupId: student.groupId
+                    };
+                }
+                return s;
+            })))
+    }
+
     return (
         <div className="App">
             <header className="App-header">
@@ -45,9 +77,12 @@ function App() {
                     </div>
                 </Grid>
                 <Grid item xs={8} >
-                    <StudentList errors={errorData} listStudents={students} onDelete={deleteUser}/>
+                    <div className={"tableContainer"}>
+                        <StudentList errors={errorData} listStudents={students} onDelete={deleteUser} onOpenDialog={openDialog}/>
+                    </div>
                 </Grid>
             </Grid>
+            <StudentDialog isOpen={open} onClose={closeDialog} user={userForUpdate} onCloseWithUpdate={updateUser}/>
         </div>
     );
 }

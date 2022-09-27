@@ -11,11 +11,13 @@ import {Button} from "@mui/material";
 
 
 
-export const StudentList = ({ listStudents, errors ,onDelete })=>{
-
-
+export const StudentList = ({ listStudents, errors ,onDelete,onOpenDialog })=>{
+    
     function deleteStudent(evt){
         onDelete(evt.target.value)
+    }
+    function openDialog(evt){
+        onOpenDialog(JSON.parse(evt.target.value));
     }
 
     function createData(id, firstname, lastname, avg, groupId, actions,) {
@@ -27,14 +29,14 @@ export const StudentList = ({ listStudents, errors ,onDelete })=>{
             return  createData(obj.id,obj.firstname, obj.lastname, obj.avgStatus, obj.groupId,
                 <div>
                     <Button value={obj.id} variant="outlined" color="secondary" type={"submit"} onClick={deleteStudent} >Delete</Button>
-                    <Button value={obj.id} variant="outlined" color="secondary" type={"submit"} >Update</Button>
+                    <Button value={JSON.stringify(obj)} variant="outlined" color="secondary" type={"submit"} onClick={openDialog}>Update</Button>
                 </div>
                 );
         });
 
         return (
                 <TableContainer component={Paper} sx={{ mt: 5 }}>
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <Table sx={{ minWidth: 640}} aria-label="simple table">
                         <TableHead>
                             <TableRow>
                                 <TableCell>Имя</TableCell>
@@ -44,7 +46,7 @@ export const StudentList = ({ listStudents, errors ,onDelete })=>{
                                 <TableCell align="right">Действия</TableCell>
                             </TableRow>
                         </TableHead>
-                        <TableBody>
+                        <TableBody >
                             {rows.map((row) => (
                                 <TableRow
                                     key={row.id}
